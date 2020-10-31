@@ -68,6 +68,7 @@ public class Puzzle2 {
             int[][] array = getMovedArray(x,y,x+1,y,nowArray);
             int matchPoint = getMatchPoint(array);
 
+
             if(map.keySet().contains(matchPoint)){
                 Set<int[][]> set = map.get(matchPoint);
                 set.add(array);
