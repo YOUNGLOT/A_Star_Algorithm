@@ -1,4 +1,4 @@
-package Test;
+package AStar;
 
 import java.util.*;
 
@@ -43,8 +43,8 @@ public class AStar {
     //  알고리즘 로직
     private void logic() {
         //  우선 순위가 가장 높은 경우의 Map을 가져온다. (TriageScore가 가장 낮은값)
-        int triageScore = Collections.min(queueMap.keySet());
-        Map<Long, int[][]> map = queueMap.get(triageScore);
+        int minKey = Collections.min(queueMap.keySet());
+        Map<Long, int[][]> map = queueMap.get(minKey);
 
         //  for 문을 위한 KeySet
         Set<Long> clonedKeySet = cloneSet(map.keySet());
@@ -55,7 +55,7 @@ public class AStar {
                 break;
             }
 
-            //  key 로  Array 불러옴
+            //  key
             int[][] array = map.get(key);
 
             //  처리 후 결과 출력을 위해 보관
@@ -68,8 +68,8 @@ public class AStar {
             map.remove(key);
 
             //  queueMap에 min_QueueMapKey의 Value의 맵이 null이면 제거
-            if (queueMap.get(key).size() == 0) {
-                queueMap.remove(key);
+            if (queueMap.get(minKey).size() == 0) {
+                queueMap.remove(minKey);
             }
         }
     }
