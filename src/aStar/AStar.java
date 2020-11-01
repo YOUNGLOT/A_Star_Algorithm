@@ -1,4 +1,4 @@
-package AStar;
+package aStar;
 
 import java.util.*;
 
