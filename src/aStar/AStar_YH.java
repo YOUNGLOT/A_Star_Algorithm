@@ -16,8 +16,6 @@ public class AStar_YH {
         //  목표 Array
         this.GOAL_ARRAY = goalArray;
         this.INPUT_ARRAY = inputArray;
-        //  결과 Array
-        this.resultArray = new int[goalArray.length][goalArray.length];
 
         //  inputArray 를 triageMap 에 넣음 , key는 1로 임의로 지정
         Map<String, int[][]> map = new HashMap<>();
@@ -27,8 +25,8 @@ public class AStar_YH {
 
     public static void main(String[] args) {
         //3x3
-//        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
-//        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
+        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
+        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
 
         //4x4
 //        int[][] goalArray = {{ 4, 1, 6, 2}, {8, 5, 0, 3}, {9, 10, 14, 7}, {12, 13, 15, 11}};
@@ -54,10 +52,11 @@ public class AStar_YH {
 //        int[][] goalArray = {{ 9, 1, 2, 3, 4, 5, 6, 7, 8}, {18, 10, 11, 12, 13, 14, 15, 16, 17}, {27, 19, 20, 21, 22, 23, 24, 25, 26}, {36, 28, 29, 30, 31, 32, 33, 34, 35}, {45, 37, 38, 39, 40, 41, 42, 43, 44}, {54, 46, 47, 48, 49, 50, 51, 52, 53}, {0, 55, 56, 57, 58, 59, 60, 61, 62}, {63, 64, 65, 66, 67, 68, 69, 70, 71}, {72, 73, 74, 75, 76, 77, 78, 79, 80}};
 //        int[][] inputArray = {{ 1, 2, 11, 3, 4, 5, 6, 7, 8}, {9, 10, 12, 13, 14, 15, 16, 17, 26}, {18, 19, 20, 21, 22, 23, 24, 25, 35}, {27, 28, 29, 30, 31, 32, 33, 34, 44}, {36, 37, 38, 39, 40, 41, 42, 43, 53}, {45, 46, 47, 48, 49, 59, 50, 51, 52}, {54, 55, 65, 56, 57, 58, 60, 61, 62}, {63, 64, 74, 66, 67, 68, 69, 70, 71}, {72, 0, 73, 75, 76, 77, 78, 79, 80}};
 
+//        int[][] goalArray = {{ 1, 7, 2, 3, 4, 5}, {6, 8, 14, 9, 10, 11}, {12, 19, 13, 15, 16, 17}, {18, 20, 26, 21, 23, 29}, {24, 25, 27, 28, 34, 0}, {30, 31, 32, 33, 35, 22}};
+//        int[][] inputArray = {{ 6, 1, 2, 3, 4, 5}, {12, 7, 8, 9, 10, 11}, {13, 19, 14, 15, 16, 17}, {24, 18, 20, 21, 22, 23}, {25, 26, 32, 27, 28, 29}, {30, 31, 0, 33, 34, 35}};
 
-        int[][] goalArray = {{ 1, 7, 2, 3, 4, 5}, {6, 8, 14, 9, 10, 11}, {12, 19, 13, 15, 16, 17}, {18, 20, 26, 21, 23, 29}, {24, 25, 27, 28, 34, 0}, {30, 31, 32, 33, 35, 22}};
-        int[][] inputArray = {{ 6, 1, 2, 3, 4, 5}, {12, 7, 8, 9, 10, 11}, {13, 19, 14, 15, 16, 17}, {24, 18, 20, 21, 22, 23}, {25, 26, 32, 27, 28, 29}, {30, 31, 0, 33, 34, 35}};
-
+//        int[][] goalArray = {{ 4, 2, 7, 0}, {8, 1, 10, 6}, {9, 11, 15, 3}, {12, 5, 13, 14}};
+//        int[][] inputArray = {{ 1, 2, 6, 3}, {4, 9, 5, 7}, {8, 13, 10, 11}, {12, 14, 0, 15}};
 
         AStar_YH aStar_yh = new AStar_YH(goalArray, inputArray);
         aStar_yh.solve();
@@ -67,43 +66,38 @@ public class AStar_YH {
     private void solve() {
         //  결과값이 정해 지면 멈춤
         while (resultKey.length() == 1) {
-            logic();
+            //  우선 순위가 가장 높은 경우의 TriageScore의 Map 들을 가져온다. (TriageScore가 가장 낮은값)
+            int minTriageScore = Collections.min(triageMap.keySet());
+            Map<String, int[][]> map_In_TriageScore = triageMap.get(minTriageScore);
+
+            //  for 문을 위한 KeySet
+            //  clone 이유 : 향상된 for 문은 iterator 를 이용하기 때문에 동기화를 지원한다.
+            Set<String> clonedKeySet = cloneSet(map_In_TriageScore.keySet());
+            for (String key : clonedKeySet) {
+                //  답이 나왔을 때 탈출 조건
+                if (resultKey.length() != 1) {
+                    break;
+                }
+
+                //  Array를 가져와서
+                int[][] array = map_In_TriageScore.get(key);
+
+                //  빈칸을 움직인 Array를 triageMap 넣는다
+                putMovedArray_toTriageMap(key, array);
+
+                //  처리된 map Value를 map에서 제거
+                map_In_TriageScore.remove(key);
+
+                //  triageMap에 min_TriageMapKey의 Value의 맵이 null이면 제거
+                if (triageMap.get(minTriageScore).size() == 0) {
+                    triageMap.remove(minTriageScore);
+                }
+            }
+            fistTime = false;
         }
 
         //  결과를 프린트 (풀이 과정)
         printResult();
-    }
-
-    //  알고리즘 로직
-    private void logic() {
-        //  우선 순위가 가장 높은 경우의 TriageScore의 Map 들을 가져온다. (TriageScore가 가장 낮은값)
-        int minTriageScore = Collections.min(triageMap.keySet());
-        Map<String, int[][]> map_In_TriageScore = triageMap.get(minTriageScore);
-
-        //  for 문을 위한 KeySet
-        //  clone 이유 : 향상된 for 문은 iterator 를 이용하기 때문에 동기화를 지원한다.
-        Set<String> clonedKeySet = cloneSet(map_In_TriageScore.keySet());
-        for (String key : clonedKeySet) {
-            //  답이 나왔을 때 탈출 조건
-            if (resultKey.length() != 1) {
-                break;
-            }
-
-            //  Array를 가져와서
-            int[][] array = map_In_TriageScore.get(key);
-
-            //  빈칸을 움직인 Array를 triageMap 넣는다
-            putMovedArray_toTriageMap(key, array);
-
-            //  처리된 map Value를 map에서 제거
-            map_In_TriageScore.remove(key);
-
-            //  triageMap에 min_TriageMapKey의 Value의 맵이 null이면 제거
-            if (triageMap.get(minTriageScore).size() == 0) {
-                triageMap.remove(minTriageScore);
-            }
-        }
-        fistTime = false;
     }
 
     //region Array Control Methods

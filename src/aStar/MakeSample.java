@@ -22,9 +22,9 @@ public class MakeSample {
 
     private void solve() {
 
-        for (int i = 0; i < 30; i++) {
-            mix1();
+        for (int i = 0; i < 100; i++) {
             mix2();
+
         }
 
         printArray_CtrlCV(array1, "goalArray");
@@ -32,6 +32,11 @@ public class MakeSample {
     }
 
     private int[][] cloneArray() {
+        int startMixCount = 0;
+        while(startMixCount++ <= 100) {
+            mix1();
+        }
+
         int[][] newArray = new int[input][input];
 
         for (int i = 0; i < array1.length; i++) {
@@ -97,7 +102,7 @@ public class MakeSample {
     }
 
     private void mix2() {
-        int direction = new Random().nextInt(3);
+        int direction = new Random().nextInt(4);
 
         int x = -1, y = -1;
         for (int k = 0; k < array2.length; k++) {
@@ -131,7 +136,7 @@ public class MakeSample {
         }
         if (direction == 3) {
             if (y - 1 >= 0) {
-                int value = array2[x][y - 1];
+                int value = array2[y - 1][x];
                 array2[y][x] = value;
                 array2[y - 1][x] = 0;
             }
