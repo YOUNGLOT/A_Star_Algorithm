@@ -1,8 +1,11 @@
 package queue;
 
-import java.util.*;
+import enhancedAStar.MyPriorityQueue;
 
-public class Queue1 {
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+public class Queue2 {
 
     private final int[][] GOAL_ARRAY; //    목표 Array
     private final int[][] INPUT_ARRAY;
@@ -11,7 +14,7 @@ public class Queue1 {
     private String resultKey = "1";
 
     //  사용할 우선순위 큐!
-    private PriorityQueue<Data> priorityQueue = new PriorityQueue<>(new Comparator<Data>() {
+    private MyPriorityQueue<Data> priorityQueue = new MyPriorityQueue<>(new Comparator<Data>() {
                 @Override
                 public int compare(Data o1, Data o2) {
                     int score = getTriageScore(o2) - getTriageScore(o1);
@@ -24,7 +27,7 @@ public class Queue1 {
 
     private boolean fistTime = true;
 
-    public Queue1(int[][] goalArray, int[][] inputArray) {
+    public Queue2(int[][] goalArray, int[][] inputArray) {
 
         GOAL_ARRAY = goalArray;
         INPUT_ARRAY = inputArray;
@@ -42,11 +45,12 @@ public class Queue1 {
 
         int[][] goalArray = {{ 1, 5, 2, 3}, {0, 9, 7, 11}, {4, 13, 10, 6}, {8, 12, 14, 15}};
         int[][] inputArray = {{ 9, 2, 3, 0}, {1, 7, 6, 11}, {5, 8, 14, 10}, {13, 4, 12, 15}};
-        Queue1 queue = new Queue1(goalArray, inputArray);
+        Queue2 queue = new Queue2(goalArray, inputArray);
         queue.solve();
     }
 
     public void solve() {
+
 
         while (priorityQueue.size() != 0 && resultKey.length() == 1) {
             //  Data 빼옴
