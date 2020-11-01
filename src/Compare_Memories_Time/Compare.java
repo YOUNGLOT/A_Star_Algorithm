@@ -19,14 +19,12 @@ public class Compare {
 
     private void solve1(){
 
-        System.out.println(mem1());
-//        System.out.println(mem2());
-//        System.out.println(mem3());
-        System.out.println(time1());
-        System.out.println(time2());
-//        System.out.println(time3());
-
-
+        System.out.println("enhanced Astar Memory : " + mem1()/1024 + " Kbyte");
+        System.out.println("queue    Astar Memory : " + mem2()/1024 + " Kbyte");
+        System.out.println("Astar    Astar Memory : " + mem3()/1024 + " Kbyte");
+        System.out.println("enhanced Astar Time   : " +time1() + " ns");
+        System.out.println("queue    Astar Time   : " +time2() + " ns");
+        System.out.println("Astar    Astar Time   : " +time3() + " ns");
     }
 
     private void solve() {

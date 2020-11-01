@@ -8,7 +8,7 @@ public class AStar {
     private final int[][] INPUT_ARRAY;
     private Map<Integer, Map<String, int[][]>> triageMap = new HashMap<>();//  우선순위로 정렬 된 맵
 
-    private String resultKey = "1"; // 결과값의 key값 (default => -1)
+    private String resultKey = "1"; // 결과값의 key값
     private int[][] resultArray;
 
     private boolean fistTime = true;
@@ -74,11 +74,12 @@ public class AStar {
             //  for 문을 위한 KeySet
             //  clone 이유 : 향상된 for 문은 iterator 를 이용하기 때문에 동기화를 지원한다.
             Set<String> clonedKeySet = cloneSet(map_In_TriageScore.keySet());
+            //  Exception in thread "main" java.util.ConcurrentModificationException
+//                  at java.base/java.util.HashMap$HashIterator.nextNode(HashMap.java:1493)
+//                  at java.base/java.util.HashMap$KeyIterator.next(HashMap.java:1516)
+//                  at aStar.AStar.solve(AStar.java:78)
+//                  at aStar.AStar.main(AStar.java:63)
             for (String key : clonedKeySet) {
-                //  답이 나왔을 때 탈출 조건
-                if (resultKey.length() != 1) {
-                    break;
-                }
 
                 //  Array를 가져와서
                 int[][] array = map_In_TriageScore.get(key);
@@ -92,6 +93,11 @@ public class AStar {
                 //  triageMap에 min_TriageMapKey의 Value의 맵이 null이면 제거
                 if (triageMap.get(minTriageScore).size() == 0) {
                     triageMap.remove(minTriageScore);
+                }
+
+                //  답이 나왔을 때 탈출 조건
+                if (resultKey.length() != 1) {
+                    break;
                 }
             }
             fistTime = false;

@@ -63,7 +63,7 @@ public class Queue2 {
             fistTime = false;
         }
 
-        //printResult();
+        printResult();
     }
 
     private void putNewMovedData_ToQueue(Data data) {
