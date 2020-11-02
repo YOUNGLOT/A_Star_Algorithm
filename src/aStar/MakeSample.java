@@ -22,7 +22,7 @@ public class MakeSample {
 
     private void solve() {
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 70; i++) {
             mix2();
         }
 

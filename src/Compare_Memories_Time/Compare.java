@@ -1,5 +1,6 @@
 package Compare_Memories_Time;
 
+import A_Star_Algorithm.EnhancedAStar1;
 import aStar.AStar;
 import enhancedAStar.EnhancedAStar;
 import queue.Queue1;
@@ -19,12 +20,14 @@ public class Compare {
 
     private void solve1(){
 
-        System.out.println("enhanced Astar Memory : " + mem1()/1024 + " Kbyte");
-        System.out.println("queue    Astar Memory : " + mem2()/1024 + " Kbyte");
-        System.out.println("Astar    Astar Memory : " + mem3()/1024 + " Kbyte");
-        System.out.println("enhanced Astar Time   : " +time1() + " ns");
-        System.out.println("queue    Astar Time   : " +time2() + " ns");
-        System.out.println("Astar    Astar Time   : " +time3() + " ns");
+//        System.out.println("enhanced Astar Memory : " + mem1()/1024 + " Kbyte");
+//        System.out.println("enhanced Astar1Memory : " + mem11()/1024 + " Kbyte");
+//        System.out.println("queue    Astar Memory : " + mem2()/1024 + " Kbyte");
+//        System.out.println("Astar    Astar Memory : " + mem3()/1024 + " Kbyte");
+//        System.out.println("enhanced Astar Time   : " +time1() + " ns");
+//        System.out.println("enhanced Astar1Time   : " +time11() + " ns");
+//        System.out.println("queue    Astar Time   : " +time2() + " ns");
+//        System.out.println("Astar    Astar Time   : " +time3() + " ns");
     }
 
     private void solve() {
@@ -78,6 +81,16 @@ public class Compare {
         return endTime - startTime;
     }
 
+    private long time11() {
+        long startTime = System.nanoTime();
+
+        EnhancedAStar1 time1 = new EnhancedAStar1(goalArray, inputArray);
+        time1.solve();
+
+        long endTime = System.nanoTime();
+        return endTime - startTime;
+    }
+
     private long time2() {
         long startTime = System.nanoTime();
 
@@ -102,6 +115,16 @@ public class Compare {
         long startTime = getNowMemory();
 
         EnhancedAStar time1 = new EnhancedAStar(goalArray, inputArray);
+        time1.solve();
+
+        long endTime = getNowMemory();
+        return endTime - startTime;
+    }
+
+    private long mem11() {
+        long startTime = getNowMemory();
+
+        EnhancedAStar1 time1 = new EnhancedAStar1(goalArray, inputArray);
         time1.solve();
 
         long endTime = getNowMemory();

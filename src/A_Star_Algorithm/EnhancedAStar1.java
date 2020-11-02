@@ -1,16 +1,50 @@
-package enhancedAStar;
+package A_Star_Algorithm;
 
-import queue.Data;
+import java.util.*;
+import java.util.stream.DoubleStream;
 
-import java.util.Comparator;
+class Data{
+    private String key;
+    private int[][] array;
 
-public class EnhancedAStar {
+    public Data(String key, int[][] array) {
+        this.key = key;
+        this.array = array;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public int[][] getArray() {
+        return array;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Data data = (Data) o;
+        return Objects.equals(key, data.key) &&
+                Arrays.equals(array, data.array);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(key);
+        result = 31 * result + Arrays.hashCode(array);
+        return result;
+    }
+}
+
+public class EnhancedAStar1 {
     private final int[][] GOAL_ARRAY; //    목표 Array
 
     private String resultKey = "6"; //  결과값을 넣을 필드
     private int[][] resultArray;
+
     //  우선순위 큐
-    private MyPriorityQueue<Data> mypriorityQueue = new MyPriorityQueue<>(new Comparator<Data>() {
+    private final PriorityQueue<Data> priorityQueue = new PriorityQueue<Data>(new Comparator<Data>() {
         //  큐 내부에서 우선순위를 매길 때 사용하는 함수
         @Override
         public int compare(Data data1, Data data2) {
@@ -23,22 +57,48 @@ public class EnhancedAStar {
 //            }
 //            return (score > 0) ? 1 : -1;
         }
-    });
+    }) {
+        //   중복값 확인 Set (Queue 필드)
+        private final Set<Integer> data_ArrayHashCodeSet = new HashSet<>();
+        private final Set<int[][]> data_ArraySet = new HashSet<>();
+
+        //  offer Method 호출시 중복확인 작업 후 실행
+        @Override
+        public boolean offer(Data data) {
+            //  HashCode 추출 후
+            int arrayHashCode = data.getArray().hashCode();
+            //  Set에서 확인함
+            if (data_ArrayHashCodeSet.contains(arrayHashCode)) {
+                //  HashCode가 중복되면 Array 자체를 비교
+                int[][] dataArray = data.getArray();
+                if (data_ArraySet.contains(dataArray)) {
+                    return false;
+                }
+                data_ArraySet.add(dataArray);
+            }
+            //  Set에 없을 경우 등록
+            data_ArrayHashCodeSet.add(arrayHashCode);
+            //  HashCode 가 겹친 이력이 있는 Array를 적재 하는게 (메모리 && 시간) 이득이였음 -> 주석처리함
+            //  data_ArraySet.add(((Data) data).getArray());
+
+            //  상위 클래스 offer 호출
+            return super.offer(data);
+        }};
 
     //  생성자
-    public EnhancedAStar(int[][] goalArray, int[][] inputArray) {
+    public EnhancedAStar1(int[][] goalArray, int[][] inputArray) {
         //  인풋값으로 필드 생성
         GOAL_ARRAY = goalArray;
         //  큐에 처음에 실행 될 Input_Array를 넣는다 (Key = 5 는 unique한 숫자라 넣음)
-        mypriorityQueue.offer(new Data("5", inputArray));
+        priorityQueue.offer(new Data("5", inputArray));
     }
 
     public static void main(String[] args) {
 
         //region   샘플용 Arrays
         //3x3
-//        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
-//        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
+        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
+        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
 
         //4x4
 //        int[][] goalArray = {{ 4, 1, 6, 2}, {8, 5, 0, 3}, {9, 10, 14, 7}, {12, 13, 15, 11}};
@@ -69,27 +129,28 @@ public class EnhancedAStar {
 
         //endregion
 
-        int[][] goalArray = {{ 1, 2, 3, 7}, {4, 0, 11, 14}, {8, 5, 15, 6}, {12, 10, 9, 13}};
-        int[][] inputArray = {{ 1, 5, 2, 7}, {10, 8, 6, 3}, {4, 14, 11, 13}, {12, 15, 0, 9}};
+//        int[][] goalArray = {{1, 2, 3, 7}, {4, 0, 11, 14}, {8, 5, 15, 6}, {12, 10, 9, 13}};
+//        int[][] inputArray = {{1, 5, 2, 7}, {10, 8, 6, 3}, {4, 14, 11, 13}, {12, 15, 0, 9}};
 
         //  객체 생성
-        EnhancedAStar enhancedAStar = new EnhancedAStar(goalArray, inputArray);
+        EnhancedAStar1 enhancedAStar = new EnhancedAStar1(goalArray, inputArray);
         enhancedAStar.solve();
     }
 
     public void solve() {
         //  Queue에 처리 할 값이 있고, 결과값이 없을 때 : 반복
-        while (mypriorityQueue.size() != 0 && resultKey.length() == 1) {
+        while (priorityQueue.size() != 0 && resultKey.length() == 1) {
             //  Data 를 Peek!!!!
-            Data data = mypriorityQueue.peek();
-            mypriorityQueue.remove(data);
+            Data data = priorityQueue.peek();
+            priorityQueue.remove(data);
 
             String key = data.getKey();
             int[][] array = data.getArray();
 
             //  0의 좌표값을 가져온다 (x, y)
             int x = -1, y = -1;
-            outer:  //  outer : 다중 반복문을 한번에 나오는 키워드!
+            outer:
+            //  outer : 다중 반복문을 한번에 나오는 키워드!
             for (int i = 0; i < array.length; i++) {
                 for (int j = 0; j < array[i].length; j++) {
                     if (array[i][j] == 0) {
@@ -106,28 +167,28 @@ public class EnhancedAStar {
             // {상, 우, 하, 좌} 로 빈 공간이 이동한 경우
             if (y - 1 >= 0 && !lastLet.equals("3")) {   //  움직일 수 없거나, 이전 작업과 반대되는 작업을 피하는 조건문
                 //  Array를 만들고 triageMap에 넣는 작업     *offer() 함수를 Overriding 해서 중복 제거를 함
-                mypriorityQueue.offer(new Data(key + "1", getMovedArray(x, y, x, y - 1, array)));
+                priorityQueue.offer(new Data(key + "1", getMovedArray(x, y, x, y - 1, array)));
             } //상
             if (x + 1 < array.length && !lastLet.equals("4")) {
-                mypriorityQueue.offer(new Data(key + "2", getMovedArray(x, y, x + 1, y, array)));
+                priorityQueue.offer(new Data(key + "2", getMovedArray(x, y, x + 1, y, array)));
             } //우
             if (y + 1 < array.length && !lastLet.equals("1")) {
-                mypriorityQueue.offer(new Data(key + "3", getMovedArray(x, y, x, y + 1, array)));
+                priorityQueue.offer(new Data(key + "3", getMovedArray(x, y, x, y + 1, array)));
             } //하
             if (x - 1 >= 0 && !lastLet.equals("2")) {
-                mypriorityQueue.offer(new Data(key + "4", getMovedArray(x, y, x - 1, y, array)));
+                priorityQueue.offer(new Data(key + "4", getMovedArray(x, y, x - 1, y, array)));
             } //좌
         }
 
         //  결과를 출력
-//        if (resultKey.length() == 1) {
-//            System.out.println("이동 가능한 경로가 없습니다.");
-//        } else {
-//            //  목표 Array 출력
-//            printDirectionAndArray("목표 Array", GOAL_ARRAY);
-//            //  재귀함수로 그동안의 과정을 구현
-//            printProcess_recursive();
-//        }
+        if (resultKey.length() == 1) {
+            System.out.println("이동 가능한 경로가 없습니다.");
+        } else {
+            //  목표 Array 출력
+            printDirectionAndArray("목표 Array", GOAL_ARRAY);
+            //  재귀함수로 그동안의 과정을 구현
+            printProcess_recursive();
+        }
     }
 
     //  movedX, movedY 로 빈칸이 움직인 Array를 반환 (조건은 상위 코드에서 충족)
@@ -210,7 +271,6 @@ public class EnhancedAStar {
             resultKey = key2;
             resultArray = array2;
         }
-
         return (score1 + key1.length()) - (score2 + key2.length());
     }
 

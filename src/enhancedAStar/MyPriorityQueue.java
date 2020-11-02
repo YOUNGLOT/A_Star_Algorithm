@@ -11,12 +11,25 @@ public class MyPriorityQueue<E> extends PriorityQueue<E> {
     private Set<Integer> data_ArrayHashCodeSet;
     private Set<int[][]> data_ArraySet;
 
-    //  compare 메소드를 재 정의 하기 위해 매개변수로 Comparator를 받음
+    public MyPriorityQueue(){};
+    //  compare 메소드를 사용 Class 에서 재 정의 하기 위해 매개변수로 Comparator를 받음
     public MyPriorityQueue(Comparator comparator) { // 생성자
         super(comparator);
         data_ArrayHashCodeSet = new HashSet<>();
         data_ArraySet = new HashSet<>();
     }
+
+    /*
+    //  Queue Class 에서 재 정의 할때 : 이렇게 하면 됩니다
+    public MyPriorityQueue(){
+        Comparator comparator = new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                return 0;
+            }
+        };
+    }
+    */
 
     //  Data 를 offer (add) 할 때, 중복 확인 후 상위클래스 offer 호출
     @Override
@@ -36,6 +49,7 @@ public class MyPriorityQueue<E> extends PriorityQueue<E> {
             }
             //  Set에 없을 경우 등록
             data_ArrayHashCodeSet.add(arrayHashCode);
+            //  HashCode 가 겹친 이력이 있는 Array를 적재 하는게 (메모리 && 시간) 이득이였음 -> 주석처리함
             //  data_ArraySet.add(((Data) data).getArray());
         }
         //  상위 클래스 offer 호출

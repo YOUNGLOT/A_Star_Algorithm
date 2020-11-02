@@ -14,20 +14,23 @@ public class AStar {
     private boolean fistTime = true;
 
     public AStar(int[][] goalArray, int[][] inputArray) {
-        //  목표 Array
+
         this.GOAL_ARRAY = goalArray;
         this.INPUT_ARRAY = inputArray;
 
-        //  inputArray 를 triageMap 에 넣음 , key는 1로 임의로 지정
+        //  inputArray를 처리하기 위해 Map에 등록
         Map<String, int[][]> map = new HashMap<>();
         map.put("5", inputArray);
+        //  우선순위(TriageScore) 를 구한 후 맞는 Map에 Put
         triageMap.put(getTriageScore("5", inputArray), map);
     }
 
     public static void main(String[] args) {
+
+        //region Sample Arrayas
         //3x3
-        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
-        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
+//        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
+//        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
 
         //4x4
 //        int[][] goalArray = {{ 4, 1, 6, 2}, {8, 5, 0, 3}, {9, 10, 14, 7}, {12, 13, 15, 11}};
@@ -53,11 +56,13 @@ public class AStar {
 //        int[][] goalArray = {{ 9, 1, 2, 3, 4, 5, 6, 7, 8}, {18, 10, 11, 12, 13, 14, 15, 16, 17}, {27, 19, 20, 21, 22, 23, 24, 25, 26}, {36, 28, 29, 30, 31, 32, 33, 34, 35}, {45, 37, 38, 39, 40, 41, 42, 43, 44}, {54, 46, 47, 48, 49, 50, 51, 52, 53}, {0, 55, 56, 57, 58, 59, 60, 61, 62}, {63, 64, 65, 66, 67, 68, 69, 70, 71}, {72, 73, 74, 75, 76, 77, 78, 79, 80}};
 //        int[][] inputArray = {{ 1, 2, 11, 3, 4, 5, 6, 7, 8}, {9, 10, 12, 13, 14, 15, 16, 17, 26}, {18, 19, 20, 21, 22, 23, 24, 25, 35}, {27, 28, 29, 30, 31, 32, 33, 34, 44}, {36, 37, 38, 39, 40, 41, 42, 43, 53}, {45, 46, 47, 48, 49, 59, 50, 51, 52}, {54, 55, 65, 56, 57, 58, 60, 61, 62}, {63, 64, 74, 66, 67, 68, 69, 70, 71}, {72, 0, 73, 75, 76, 77, 78, 79, 80}};
 
+        //endregion
+
 //        int[][] goalArray = {{ 1, 7, 2, 3, 4, 5}, {6, 8, 14, 9, 10, 11}, {12, 19, 13, 15, 16, 17}, {18, 20, 26, 21, 23, 29}, {24, 25, 27, 28, 34, 0}, {30, 31, 32, 33, 35, 22}};
 //        int[][] inputArray = {{ 6, 1, 2, 3, 4, 5}, {12, 7, 8, 9, 10, 11}, {13, 19, 14, 15, 16, 17}, {24, 18, 20, 21, 22, 23}, {25, 26, 32, 27, 28, 29}, {30, 31, 0, 33, 34, 35}};
 
-//        int[][] goalArray = {{ 4, 2, 7, 0}, {8, 1, 10, 6}, {9, 11, 15, 3}, {12, 5, 13, 14}};
-//        int[][] inputArray = {{ 1, 2, 6, 3}, {4, 9, 5, 7}, {8, 13, 10, 11}, {12, 14, 0, 15}};
+        int[][] goalArray = {{ 4, 2, 7, 0}, {8, 1, 10, 6}, {9, 11, 15, 3}, {12, 5, 13, 14}};
+        int[][] inputArray = {{ 1, 2, 6, 3}, {4, 9, 5, 7}, {8, 13, 10, 11}, {12, 14, 0, 15}};
 
         AStar aStar = new AStar(goalArray, inputArray);
         aStar.solve();
@@ -322,14 +327,14 @@ public class AStar {
 
     //  Key 와 Array를 print 하는 함수
     private void printKeyArray(String direction, int[][] array) {
-        System.out.printf("  Do  : %s\n--------------\n", direction);
+        System.out.printf("  Do  : %s\n----------------\n", direction);
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
                 System.out.printf("% 3d ", array[i][j]);
             }
             System.out.println();
         }
-        System.out.println("--------------");
+        System.out.println("----------------");
     }
     //endregion
 }
