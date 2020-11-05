@@ -1,10 +1,8 @@
 package enhancedAStar;
 
 import queue.Data;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+
+import java.util.*;
 
 public class MyPriorityQueue<E> extends PriorityQueue<E> {
     //  Queue 에 들어온 Data의 (int) Array.HashCode(); 값을 저장하는 Set
@@ -17,6 +15,7 @@ public class MyPriorityQueue<E> extends PriorityQueue<E> {
         super(comparator);
         data_ArrayHashCodeSet = new HashSet<>();
         data_ArraySet = new HashSet<>();
+
     }
 
     /*

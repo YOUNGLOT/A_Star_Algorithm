@@ -20,14 +20,14 @@ public class Compare {
 
     private void solve1(){
 
-//        System.out.println("enhanced Astar Memory : " + mem1()/1024 + " Kbyte");
+        System.out.println("         Astar Memory : " + mem1()/1024 + " Kbyte");
 //        System.out.println("enhanced Astar1Memory : " + mem11()/1024 + " Kbyte");
-//        System.out.println("queue    Astar Memory : " + mem2()/1024 + " Kbyte");
-//        System.out.println("Astar    Astar Memory : " + mem3()/1024 + " Kbyte");
-//        System.out.println("enhanced Astar Time   : " +time1() + " ns");
+//        System.out.println("queue     Astar Memory : " + mem2()/1024 + " Kbyte");
+//        System.out.println("useMap    Astar Memory : " + mem3()/1024 + " Kbyte");
+        System.out.println("         Astar Time   : " +time1() + " ns");
 //        System.out.println("enhanced Astar1Time   : " +time11() + " ns");
-//        System.out.println("queue    Astar Time   : " +time2() + " ns");
-//        System.out.println("Astar    Astar Time   : " +time3() + " ns");
+//        System.out.println("queue     Astar Time   : " +time2() + " ns");
+//        System.out.println("useMap    Astar Time   : " +time3() + " ns");
     }
 
     private void solve() {

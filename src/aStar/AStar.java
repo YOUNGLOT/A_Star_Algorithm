@@ -79,6 +79,7 @@ public class AStar {
             //  for 문을 위한 KeySet
             //  clone 이유 : 향상된 for 문은 iterator 를 이용하기 때문에 동기화를 지원한다.
             Set<String> clonedKeySet = cloneSet(map_In_TriageScore.keySet());
+            //Set<String> clonedKeySet = map_In_TriageScore.keySet();
             //  Exception in thread "main" java.util.ConcurrentModificationException
 //                  at java.base/java.util.HashMap$HashIterator.nextNode(HashMap.java:1493)
 //                  at java.base/java.util.HashMap$KeyIterator.next(HashMap.java:1516)

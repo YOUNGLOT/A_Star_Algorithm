@@ -1,7 +1,6 @@
 package A_Star_Algorithm;
 
 import java.util.*;
-import java.util.stream.DoubleStream;
 
 class Data{
     private String key;
@@ -40,7 +39,7 @@ class Data{
 public class EnhancedAStar1 {
     private final int[][] GOAL_ARRAY; //    목표 Array
 
-    private String resultKey = "6"; //  결과값을 넣을 필드
+    private String resultKey = "5"; //  결과값을 넣을 필드
     private int[][] resultArray;
 
     //  우선순위 큐
