@@ -1,12 +1,17 @@
 package aStar;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
+
 
 public class MakeSample {
     private int input;
     private int[][] array1;
     private int[][] array2;
+    private int exBehaveKeyNum = 4;
+    private Set<int[][]> arraySet = new HashSet<>();
 
     public MakeSample(int input) {
         this.input = input;
@@ -20,6 +25,17 @@ public class MakeSample {
         makeSample.solve();
     }
 
+    public Array_Array makeArraySet(int input) {
+        Array_Array array_array = new Array_Array();
+        for (int i = 0; i < input; i++) {
+            mix2();
+        }
+        array_array.setArray1(array1);
+        array_array.setArray2(array2);
+        return array_array;
+    }
+
+
     private void solve() {
 
         for (int i = 0; i < 70; i++) {
@@ -32,7 +48,7 @@ public class MakeSample {
 
     private int[][] cloneArray() {
         int startMixCount = 0;
-        while(startMixCount++ <= 100) {
+        while (startMixCount++ <= 100) {
             mix1();
         }
 
@@ -60,6 +76,7 @@ public class MakeSample {
 
     private void mix1() {
         int direction = new Random().nextInt(4);
+        int[][] array1 = new int[input][input];
         int x = -1, y = -1;
         for (int k = 0; k < array1.length; k++) {
             for (int j = 0; j < array1[k].length; j++) {
@@ -112,39 +129,51 @@ public class MakeSample {
                 }
             }
         }
-        if (direction == 0) {
+        if (direction == 0 && exBehaveKeyNum != 1) {
             if (x + 1 < array2.length) {
                 int value = array2[y][x + 1];
                 array2[y][x] = value;
                 array2[y][x + 1] = 0;
+                if(!arraySet.contains(array1)){
+                    arraySet.add(this.array1 = array1);
+                }
             }
         }
-        if (direction == 1) {
+        if (direction == 1 && exBehaveKeyNum != 0) {
             if (x - 1 >= 0) {
                 int value = array2[y][x - 1];
                 array2[y][x] = value;
                 array2[y][x - 1] = 0;
+                if(!arraySet.contains(array1)){
+                    arraySet.add(this.array1 = array1);
+                }
             }
         }
-        if (direction == 2) {
+        if (direction == 2 && exBehaveKeyNum != 3) {
             if (y + 1 < array2.length) {
                 int value = array2[y + 1][x];
                 array2[y][x] = value;
                 array2[y + 1][x] = 0;
+                if(!arraySet.contains(array1)){
+                    arraySet.add(this.array1 = array1);
+                }
             }
         }
-        if (direction == 3) {
+        if (direction == 3 && exBehaveKeyNum != 2) {
             if (y - 1 >= 0) {
                 int value = array2[y - 1][x];
                 array2[y][x] = value;
                 array2[y - 1][x] = 0;
+                if(!arraySet.contains(array1)){
+                    arraySet.add(this.array1 = array1);
+                }
             }
         }
     }
 
     private void printArray_CtrlCV(int[][] array, String name) {
 
-        System.out.printf("int[][] %s = {{ ",name);
+        System.out.printf("int[][] %s = {{ ", name);
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
                 if (j == 0) {

@@ -2,7 +2,7 @@ package A_Star_Algorithm;
 
 import java.util.*;
 
-class Data{
+class Data {
     private String key;
     private int[][] array;
 
@@ -42,6 +42,8 @@ public class EnhancedAStar1 {
     private String resultKey = "5"; //  결과값을 넣을 필드
     private int[][] resultArray;
 
+    private int loopCount = 0;
+
     //  우선순위 큐
     private final PriorityQueue<Data> priorityQueue = new PriorityQueue<Data>(new Comparator<Data>() {
         //  큐 내부에서 우선순위를 매길 때 사용하는 함수
@@ -55,7 +57,66 @@ public class EnhancedAStar1 {
 //                return 0;
 //            }
 //            return (score > 0) ? 1 : -1;
+
+            //region TriageScore 함수 (우선순위 함수)
         }
+
+        //  우선순위를 정하는 함수 (모든 case 마다 2중포문이 2번씩 돌아감 -> 2중포문 한번으로 축약)
+//        private int getTriageScore(Data data) {
+//            String key = data.getKey();
+//            int[][] array = data.getArray();
+//            // default 0
+//            int matchPoint = 0;
+//
+//            //  다른 항목이 있을 때 마다 matchPolong++
+//            for (int i = 0; i < array.length; i++) {
+//                for (int j = 0; j < array[i].length; j++) {
+//                    if (GOAL_ARRAY[i][j] != array[i][j]) {
+//                        matchPoint++;
+//                    }
+//                }
+//            }
+//
+//            //  value가 같은 Array 일 경우 결과값 등록!
+//            if (matchPoint == 0) {
+//                resultKey = key;
+//                resultArray = array;
+//            }
+//
+//            return matchPoint + key.length();
+//        }
+
+        //  원래 1개의 Data에 맞는 TriageScore를 Return 하였으나 , 2중 for문이 있기 때문에 Triage의 비교에 사용 할 때 한번에 두 값을 get
+        private int getTriageScore_Difference(Data data1, Data data2) {
+            String key1 = data1.getKey(), key2 = data2.getKey();
+            int[][] array1 = data1.getArray(), array2 = data2.getArray();
+
+            int score1 = 0, score2 = 0;
+
+            for (int i = 0; i < array1.length; i++) {
+                for (int j = 0; j < array1[i].length; j++) {
+                    if (GOAL_ARRAY[i][j] != array1[i][j]) {
+                        score1++;
+                    }
+                    if (GOAL_ARRAY[i][j] != array2[i][j]) {
+                        score2++;
+                    }
+                }
+            }
+
+            if (score1 == 0) {
+                resultKey = key1;
+                resultArray = array1;
+            }
+            if (score2 == 0) {
+                resultKey = key2;
+                resultArray = array2;
+            }
+            return (score1 + key1.length()/5) - (score2 + key2.length()/5);
+        }
+
+        //endregion
+
     }) {
         //   중복값 확인 Set (Queue 필드)
         private final Set<Integer> data_ArrayHashCodeSet = new HashSet<>();
@@ -79,10 +140,11 @@ public class EnhancedAStar1 {
             data_ArrayHashCodeSet.add(arrayHashCode);
             //  HashCode 가 겹친 이력이 있는 Array를 적재 하는게 (메모리 && 시간) 이득이였음 -> 주석처리함
             //  data_ArraySet.add(((Data) data).getArray());
-
+            loopCount++;
             //  상위 클래스 offer 호출
             return super.offer(data);
-        }};
+        }
+    };
 
     //  생성자
     public EnhancedAStar1(int[][] goalArray, int[][] inputArray) {
@@ -96,8 +158,8 @@ public class EnhancedAStar1 {
 
         //region   샘플용 Arrays
         //3x3
-        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
-        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
+//        int[][] goalArray = {{1, 2, 3}, {8, 0, 4}, {7, 6, 5}};
+//        int[][] inputArray = {{2, 8, 3}, {1, 6, 4}, {7, 0, 5}};
 
         //4x4
 //        int[][] goalArray = {{ 4, 1, 6, 2}, {8, 5, 0, 3}, {9, 10, 14, 7}, {12, 13, 15, 11}};
@@ -116,8 +178,8 @@ public class EnhancedAStar1 {
 //        int[][] inputArray = {{ 7, 1, 2, 3, 4, 5, 6}, {8, 15, 9, 10, 11, 12, 13}, {14, 22, 16, 17, 18, 19, 20}, {21, 29, 23, 24, 25, 26, 27}, {28, 36, 30, 31, 32, 33, 34}, {35, 43, 37, 38, 39, 40, 41}, {42, 0, 44, 45, 46, 47, 48}};
 
         //8x8
-//        int[][] goalArray = {{ 8, 1, 2, 3, 4, 14, 5, 7}, {9, 17, 10, 12, 13, 6, 15, 0}, {16, 25, 18, 11, 20, 21, 22, 23}, {24, 26, 34, 19, 28, 29, 30, 31}, {32, 33, 42, 27, 36, 37, 38, 39}, {40, 41, 43, 35, 44, 45, 46, 47}, {48, 49, 50, 51, 52, 53, 54, 55}, {56, 57, 58, 59, 60, 61, 62, 63}};
-//        int[][] inputArray = {{ 1, 2, 10, 3, 4, 5, 6, 7}, {16, 8, 9, 11, 12, 13, 14, 15}, {24, 17, 18, 19, 20, 21, 22, 23}, {32, 25, 26, 27, 28, 29, 30, 31}, {40, 33, 34, 35, 36, 37, 38, 39}, {48, 41, 42, 43, 44, 45, 46, 47}, {56, 49, 50, 51, 52, 53, 54, 55}, {57, 58, 59, 0, 60, 61, 62, 63}};
+        int[][] goalArray = {{8, 1, 2, 3, 4, 14, 5, 7}, {9, 17, 10, 12, 13, 6, 15, 0}, {16, 25, 18, 11, 20, 21, 22, 23}, {24, 26, 34, 19, 28, 29, 30, 31}, {32, 33, 42, 27, 36, 37, 38, 39}, {40, 41, 43, 35, 44, 45, 46, 47}, {48, 49, 50, 51, 52, 53, 54, 55}, {56, 57, 58, 59, 60, 61, 62, 63}};
+        int[][] inputArray = {{1, 2, 10, 3, 4, 5, 6, 7}, {16, 8, 9, 11, 12, 13, 14, 15}, {24, 17, 18, 19, 20, 21, 22, 23}, {32, 25, 26, 27, 28, 29, 30, 31}, {40, 33, 34, 35, 36, 37, 38, 39}, {48, 41, 42, 43, 44, 45, 46, 47}, {56, 49, 50, 51, 52, 53, 54, 55}, {57, 58, 59, 0, 60, 61, 62, 63}};
 
         //9x9
 //        int[][] goalArray = {{ 9, 1, 2, 3, 4, 5, 6, 7, 8}, {18, 10, 11, 12, 13, 14, 15, 16, 17}, {27, 19, 20, 21, 22, 23, 24, 25, 26}, {36, 28, 29, 30, 31, 32, 33, 34, 35}, {45, 37, 38, 39, 40, 41, 42, 43, 44}, {54, 46, 47, 48, 49, 50, 51, 52, 53}, {0, 55, 56, 57, 58, 59, 60, 61, 62}, {63, 64, 65, 66, 67, 68, 69, 70, 71}, {72, 73, 74, 75, 76, 77, 78, 79, 80}};
@@ -178,7 +240,7 @@ public class EnhancedAStar1 {
                 priorityQueue.offer(new Data(key + "4", getMovedArray(x, y, x - 1, y, array)));
             } //좌
         }
-
+        int resultLength = resultKey.length();
         //  결과를 출력
         if (resultKey.length() == 1) {
             System.out.println("이동 가능한 경로가 없습니다.");
@@ -188,6 +250,61 @@ public class EnhancedAStar1 {
             //  재귀함수로 그동안의 과정을 구현
             printProcess_recursive();
         }
+    }
+
+    public String solve_Return() {
+        //  Queue에 처리 할 값이 있고, 결과값이 없을 때 : 반복
+        while (priorityQueue.size() != 0 && resultKey.length() == 1) {
+            //  Data 를 Peek!!!!
+            Data data = priorityQueue.peek();
+            priorityQueue.remove(data);
+
+            String key = data.getKey();
+            int[][] array = data.getArray();
+
+            //  0의 좌표값을 가져온다 (x, y)
+            int x = -1, y = -1;
+            outer:
+            //  outer : 다중 반복문을 한번에 나오는 키워드!
+            for (int i = 0; i < array.length; i++) {
+                for (int j = 0; j < array[i].length; j++) {
+                    if (array[i][j] == 0) {
+                        x = j;
+                        y = i;
+                        break outer;
+                    }
+                }
+            }
+
+            //이전 작업과 반대 되는 작업을 막기 위해  Key의 끝자리를 cut!
+            String lastLet = key.substring(key.length() - 1);
+
+            // {상, 우, 하, 좌} 로 빈 공간이 이동한 경우
+            if (y - 1 >= 0 && !lastLet.equals("3")) {   //  움직일 수 없거나, 이전 작업과 반대되는 작업을 피하는 조건문
+                //  Array를 만들고 triageMap에 넣는 작업     *offer() 함수를 Overriding 해서 중복 제거를 함
+                priorityQueue.offer(new Data(key + "1", getMovedArray(x, y, x, y - 1, array)));
+            } //상
+            if (x + 1 < array.length && !lastLet.equals("4")) {
+                priorityQueue.offer(new Data(key + "2", getMovedArray(x, y, x + 1, y, array)));
+            } //우
+            if (y + 1 < array.length && !lastLet.equals("1")) {
+                priorityQueue.offer(new Data(key + "3", getMovedArray(x, y, x, y + 1, array)));
+            } //하
+            if (x - 1 >= 0 && !lastLet.equals("2")) {
+                priorityQueue.offer(new Data(key + "4", getMovedArray(x, y, x - 1, y, array)));
+            } //좌
+        }
+        int resultLength = resultKey.length();
+        //  결과를 출력
+//        if (resultKey.length() == 1) {
+//            System.out.println("이동 가능한 경로가 없습니다.");
+//        } else {
+//            //  목표 Array 출력
+//            printDirectionAndArray("목표 Array", GOAL_ARRAY);
+//            //  재귀함수로 그동안의 과정을 구현
+//            printProcess_recursive();
+//        }
+        return String.valueOf(loopCount) + "," + String.valueOf(resultLength);
     }
 
     //  movedX, movedY 로 빈칸이 움직인 Array를 반환 (조건은 상위 코드에서 충족)
@@ -214,63 +331,6 @@ public class EnhancedAStar1 {
             }
         }
         return newArray;
-    }
-
-    //endregion
-
-    //region TriageScore 함수 (우선순위 함수)
-
-    /*private int getTriageScore(Data data) {
-        String key = data.getKey();
-        int[][] array = data.getArray();
-        // default 0
-        int matchPoint = 0;
-
-        //  다른 항목이 있을 때 마다 matchPolong++
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[i].length; j++) {
-                if (GOAL_ARRAY[i][j] != array[i][j]) {
-                    matchPoint++;
-                }
-            }
-        }
-
-        //  value가 같은 Array 일 경우 결과값 등록!
-        if (matchPoint == 0) {
-            resultKey = key;
-            resultArray = array;
-        }
-
-        return matchPoint + key.length();
-    }*/
-
-    //  원래 1개의 Data에 맞는 TriageScore를 Return 하였으나 , 2중 for문이 있기 때문에 Triage의 비교에 사용 할 때 한번에 두 값을 get
-    private int getTriageScore_Difference(Data data1, Data data2) {
-        String key1 = data1.getKey(), key2 = data2.getKey();
-        int[][] array1 = data1.getArray(), array2 = data2.getArray();
-
-        int score1 = 0, score2 = 0;
-
-        for (int i = 0; i < array1.length; i++) {
-            for (int j = 0; j < array1[i].length; j++) {
-                if (GOAL_ARRAY[i][j] != array1[i][j]) {
-                    score1++;
-                }
-                if (GOAL_ARRAY[i][j] != array2[i][j]) {
-                    score2++;
-                }
-            }
-        }
-
-        if (score1 == 0) {
-            resultKey = key1;
-            resultArray = array1;
-        }
-        if (score2 == 0) {
-            resultKey = key2;
-            resultArray = array2;
-        }
-        return (score1 + key1.length()) - (score2 + key2.length());
     }
 
     //endregion
